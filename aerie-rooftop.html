@@ -187,6 +187,46 @@
   .cx-close{background:none;border:none;color:var(--mute);cursor:pointer;font-size:26px;line-height:1;width:34px;height:34px;border-radius:8px;transition:background .25s,color .25s}
   .cx-close:hover{background:var(--night-2);color:var(--paper)}
   .cx-panel iframe{flex:1;width:100%;border:none;background:var(--night)}
+
+  /* inline concierge chat */
+  .cx-chat{flex:1;overflow-y:auto;padding:18px 16px;display:flex;flex-direction:column;gap:14px}
+  .cx-msg{max-width:88%;font-size:14.5px;line-height:1.6;animation:up .45s var(--ease)}
+  @keyframes up{from{opacity:0;transform:translateY(10px)}}
+  .cx-msg.bot{align-self:flex-start}
+  .cx-msg.bot .b{background:var(--night-2);border:1px solid var(--line);border-radius:4px 14px 14px 14px;padding:13px 16px}
+  .cx-msg.me{align-self:flex-end}
+  .cx-msg.me .b{background:linear-gradient(180deg,rgba(242,92,84,.22),rgba(242,92,84,.12));border:1px solid rgba(242,92,84,.4);border-radius:14px 4px 14px 14px;padding:13px 16px;color:#fff}
+  .cx-msg .w{font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--mute);margin-bottom:6px;padding-left:2px}
+  .cx-msg.me .w{text-align:right;color:rgba(242,92,84,.8)}
+  .cx-msg .b strong{color:var(--gold);font-weight:500}
+  .cx-msg .b em{color:var(--glass);font-style:normal}
+  .cx-typing{display:flex;gap:5px;padding:14px 16px;background:var(--night-2);border:1px solid var(--line);border-radius:4px 14px 14px 14px;width:fit-content}
+  .cx-typing i{width:6px;height:6px;border-radius:50%;background:var(--mute);animation:blink 1.3s infinite}
+  .cx-typing i:nth-child(2){animation-delay:.2s}.cx-typing i:nth-child(3){animation-delay:.4s}
+  @keyframes blink{0%,60%,100%{opacity:.25}30%{opacity:1}}
+  .cx-chips{display:flex;flex-wrap:wrap;gap:7px;padding:0 16px 10px;flex-shrink:0}
+  .cx-chip{font-size:12px;color:var(--paper);background:rgba(159,178,206,.06);border:1px solid var(--line);border-radius:30px;padding:8px 13px;cursor:pointer;transition:all .3s var(--ease)}
+  .cx-chip:hover{border-color:var(--gold);color:var(--gold);transform:translateY(-2px)}
+  .cx-composer{padding:10px 16px 16px;flex-shrink:0;border-top:1px solid var(--line)}
+  .cx-composer-inner{display:flex;gap:9px;align-items:flex-end;background:var(--night-2);border:1px solid var(--line);border-radius:13px;padding:7px 7px 7px 14px;transition:border-color .3s}
+  .cx-composer-inner:focus-within{border-color:rgba(233,196,106,.5)}
+  .cx-composer textarea{flex:1;background:none;border:none;color:var(--paper);font-family:inherit;font-size:14.5px;resize:none;outline:none;max-height:110px;line-height:1.5;padding:6px 0}
+  .cx-composer textarea::placeholder{color:var(--mute)}
+  .cx-send{width:38px;height:38px;border-radius:10px;border:none;cursor:pointer;background:linear-gradient(180deg,var(--neon),#d8453d);color:#fff;display:grid;place-items:center;flex-shrink:0;transition:transform .2s,opacity .2s}
+  .cx-send:hover{transform:scale(1.06)}.cx-send:disabled{opacity:.4;transform:none;cursor:default}
+  .cx-send svg{width:17px;height:17px}
+  .cx-hint{text-align:center;font-size:10.5px;color:var(--mute);margin-top:9px;letter-spacing:.04em}
+  .cx-lead{background:var(--night-2);border:1px solid rgba(233,196,106,.35);border-radius:4px 14px 14px 14px;padding:18px;align-self:flex-start;max-width:88%;animation:up .45s var(--ease)}
+  .cx-lead h4{font-family:'Fraunces',serif;font-weight:400;font-size:19px;margin-bottom:4px}
+  .cx-lead p{font-size:12.5px;color:var(--mute);margin-bottom:14px;line-height:1.5}
+  .cx-lead .lf{margin-bottom:9px}
+  .cx-lead label{font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:5px}
+  .cx-lead input{width:100%;background:var(--night);border:1px solid var(--line);border-radius:8px;padding:10px 12px;color:var(--paper);font-family:inherit;font-size:13.5px;outline:none;transition:border-color .3s}
+  .cx-lead input:focus{border-color:var(--gold)}
+  .cx-lead .lb{width:100%;margin-top:7px;padding:12px;border:none;border-radius:8px;background:linear-gradient(180deg,var(--gold),#cda94f);color:#1a1206;font-family:inherit;font-weight:600;font-size:12.5px;letter-spacing:.04em;cursor:pointer;transition:transform .2s}
+  .cx-lead .lb:hover{transform:translateY(-2px)}
+  .cx-lead.done{text-align:center;border-color:rgba(111,207,142,.4)}
+  .cx-lead .ck{width:42px;height:42px;border-radius:50%;border:1px solid #6fcf8e;color:#6fcf8e;display:grid;place-items:center;margin:0 auto 12px;font-size:20px}
 </style>
 </head>
 <body>
@@ -473,27 +513,95 @@ set("c1",IMAGES.c1);set("c2",IMAGES.c2);set("c3",IMAGES.c3);
   document.querySelectorAll(".reveal-up").forEach(el=>io.observe(el));
 })();
 
-/* ---------- concierge slide-out ---------- */
-(function(){
+/* ---------- concierge: slide-out + inline engine ---------- */
+window.addEventListener("DOMContentLoaded",function(){
   const fab=document.getElementById("cxFab");
   const overlay=document.getElementById("cxOverlay");
   const panel=document.getElementById("cxPanel");
-  const frame=document.getElementById("cxFrame");
-  let loaded=false;
+  const chat=document.getElementById("cxChat");
+  const chipsEl=document.getElementById("cxChips");
+  const input=document.getElementById("cxInput");
+  const sendBtn=document.getElementById("cxSend");
+  if(!fab||!panel||!chat)return;
+  let booted=false,leadShown=false;
+
+  const VENUE={
+    knowledge:[
+      {tags:["capacity","how many","fit","seat","hold","size","people","big","accommodate"],
+       a:"The Aerie holds <strong>up to 220 seated</strong> for a plated reception and <strong>320 cocktail-style</strong> across two open-air terraces and the glass lounge. Smaller parties of 40–60 suit the Observation Suite. How many guests are you planning for?"},
+      {tags:["price","cost","pricing","how much","rate","budget","expensive","fee","package"],
+       a:"Pricing runs by season and day. As a guide: <strong>weekdays from $6,500</strong>, <strong>Saturdays from $14,000</strong> for exclusive use of the terrace and lounge — tables, chairs, and the in-house bar included. Catering is quoted per head. Want the team to send a quote for your date?"},
+      {tags:["date","available","availability","book","when","2026","2027","free","open","calendar"],
+       a:"Sunset dates book first, often <em>9–12 months out</em>. Spring and fall Saturdays go quickest. Share your ideal month and I can check the calendar and hold a tentative date — shall I take a few details?"},
+      {tags:["catering","food","menu","chef","drink","bar","alcohol","dinner","cocktail","cuisine"],
+       a:"Catering is <strong>in-house</strong> — a dedicated executive chef, seasonal customizable menus, and a full marble bar. We handle dietary and cultural menus, and tastings are included once your date is held."},
+      {tags:["parking","park","parked","valet","getting there","elevator","floor","arrive","arrival","drive","car"],
+       a:"Guests take two express elevators to the 40th floor. <strong>Valet parking</strong> is available in the building, and we're a short walk from transit. We provide an arrival guide for your invitations."},
+      {tags:["weather","rain","cold","winter","season","outdoor","canopy","temperature","snow"],
+       a:"The terrace works in any season — a <strong>retractable glass canopy and heaters</strong> mean rain or cold never cancels a night, with the climate-kept glass lounge as a seamless backup."},
+      {tags:["ceremony","wedding","vows","marry","married","marriage","aisle","officiant"],
+       a:"Yes — many couples hold the <strong>ceremony at sunset</strong> on the west terrace, then move inside for dinner and dancing as the skyline lights up. We coordinate the full timeline with your planner."},
+      {tags:["tour","visit","viewing","walkthrough","in person"],
+       a:"We'd love to show you the view in person — tours are by appointment, ideally late afternoon for golden hour. Want me to grab your details and set one up?"}
+    ],
+    fallback:"Great question — for the fine detail I'll connect you with the events team, who handle every booking personally. Meanwhile I can cover capacity, pricing, dates, catering, or a sunset tour. What's most useful?",
+    greeting:"Welcome to <strong>The Aerie</strong> — a rooftop forty floors above the city. I'm the concierge, here to help with dates, capacity, pricing, or catering. What can I tell you about your event?",
+    chips:["What's the capacity?","Saturday pricing","Is my date available?","Tell me about catering","Hold the ceremony here?"],
+    intent:["book","hold","reserve","my date","tentative","quote","tour","viewing","details","interested","set one up"]
+  };
+
+  function bubble(t,who){const m=document.createElement("div");m.className="cx-msg "+(who==="me"?"me":"bot");
+    m.innerHTML='<div class="w">'+(who==="me"?"You":"Concierge")+'</div><div class="b">'+t+'</div>';chat.appendChild(m);chat.scrollTop=chat.scrollHeight;}
+  function typing(on){let t=document.getElementById("cxTyping");
+    if(on){if(!t){t=document.createElement("div");t.id="cxTyping";t.className="cx-typing";t.innerHTML="<i></i><i></i><i></i>";chat.appendChild(t);chat.scrollTop=chat.scrollHeight;}}else if(t)t.remove();}
+  function chips(list){chipsEl.innerHTML="";list.forEach(function(c){const b=document.createElement("button");b.className="cx-chip";b.textContent=c;b.onclick=function(){send(c);};chipsEl.appendChild(b);});}
+  function answer(q){const s=q.toLowerCase();let best=null,bs=0;
+    VENUE.knowledge.forEach(function(k){let sc=0;k.tags.forEach(function(t){if(s.indexOf(t)>-1)sc+=t.length>4?2:1;});if(sc>bs){bs=sc;best=k;}});
+    return bs>0?best.a:VENUE.fallback;}
+  function wantsBooking(q){const s=q.toLowerCase();return VENUE.intent.some(function(t){return s.indexOf(t)>-1;});}
+
+  function leadCard(){
+    if(leadShown)return;leadShown=true;
+    const c=document.createElement("div");c.className="cx-lead";c.id="cxLead";
+    c.innerHTML='<h4>Hold your date</h4><p>Leave your details — the events team confirms availability, usually same day.</p>'+
+      '<div class="lf"><label>Name</label><input id="cxlName" placeholder="Your name"></div>'+
+      '<div class="lf"><label>Email</label><input id="cxlEmail" type="email" placeholder="you@email.com"></div>'+
+      '<div class="lf"><label>Event date (approx.)</label><input id="cxlDate" placeholder="e.g. October 2026"></div>'+
+      '<button class="lb" id="cxlSend">Request availability →</button>';
+    chat.appendChild(c);chat.scrollTop=chat.scrollHeight;
+    document.getElementById("cxlSend").onclick=function(){
+      const n=document.getElementById("cxlName").value.trim(),e=document.getElementById("cxlEmail").value.trim(),d=document.getElementById("cxlDate").value.trim();
+      if(!n){document.getElementById("cxlName").style.borderColor="#F25C54";return;}
+      if(!e){document.getElementById("cxlEmail").style.borderColor="#F25C54";return;}
+      /* swap for a Supabase insert to capture leads live */
+      const card=document.getElementById("cxLead");card.classList.add("done");
+      card.innerHTML='<div class="ck">✓</div><h4>Thank you, '+n.split(" ")[0]+'.</h4><p style="margin-bottom:0">The events team has your request'+(d?' for <strong>'+d+'</strong>':'')+' and will reply to <strong>'+e+'</strong> shortly.</p>';
+      chat.scrollTop=chat.scrollHeight;
+    };
+  }
+
+  function send(text){
+    text=(text||input.value).trim();if(!text)return;
+    input.value="";autosize();bubble(text,"me");chipsEl.innerHTML="";typing(true);sendBtn.disabled=true;
+    const booking=wantsBooking(text);
+    setTimeout(function(){typing(false);bubble(answer(text),"bot");if(booking)leadCard();sendBtn.disabled=false;input.focus();},560);
+  }
+  function autosize(){input.style.height="auto";input.style.height=Math.min(input.scrollHeight,110)+"px";}
+  input.addEventListener("input",autosize);
+  input.addEventListener("keydown",function(e){if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send();}});
+  sendBtn.addEventListener("click",function(){send();});
+
   function open(){
-    if(!loaded){frame.src="aerie-concierge.html";loaded=true;} // lazy-load on first open
-    overlay.classList.add("open");panel.classList.add("open");
-    document.body.style.overflow="hidden";
+    if(!booted){booted=true;setTimeout(function(){bubble(VENUE.greeting,"bot");chips(VENUE.chips);},250);}
+    overlay.classList.add("open");panel.classList.add("open");document.body.style.overflow="hidden";
+    setTimeout(function(){input.focus();},400);
   }
-  function close(){
-    overlay.classList.remove("open");panel.classList.remove("open");
-    document.body.style.overflow="";
-  }
+  function close(){overlay.classList.remove("open");panel.classList.remove("open");document.body.style.overflow="";}
   fab.addEventListener("click",open);
   overlay.addEventListener("click",close);
   document.getElementById("cxClose").addEventListener("click",close);
-  document.addEventListener("keydown",e=>{if(e.key==="Escape")close();});
-})();
+  document.addEventListener("keydown",function(e){if(e.key==="Escape")close();});
+});
 </script>
 
 <!-- CONCIERGE LAUNCHER -->
@@ -508,7 +616,15 @@ set("c1",IMAGES.c1);set("c2",IMAGES.c2);set("c3",IMAGES.c3);
     <span>The Aerie · Concierge</span>
     <button class="cx-close" id="cxClose" aria-label="Close">×</button>
   </div>
-  <iframe id="cxFrame" title="Concierge" loading="lazy"></iframe>
+  <div class="cx-chat" id="cxChat"></div>
+  <div class="cx-chips" id="cxChips"></div>
+  <div class="cx-composer">
+    <div class="cx-composer-inner">
+      <textarea id="cxInput" rows="1" placeholder="Ask about dates, capacity, pricing…"></textarea>
+      <button class="cx-send" id="cxSend" aria-label="Send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+    </div>
+    <div class="cx-hint">Demo concierge · answers instantly</div>
+  </div>
 </aside>
 </body>
 </html>
