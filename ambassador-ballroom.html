@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Ambassador — A Grand Ballroom</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --ink:#0B0B0F;
+    --ink-soft:#14141A;
+    --gold:#C9A65A;
+    --gold-bright:#E4C77E;
+    --bone:#F2EDE4;
+    --taupe:#8A7A6D;
+    --line:rgba(201,166,90,0.22);
+    --ease:cubic-bezier(.22,.61,.36,1);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--ink);
+    color:var(--bone);
+    font-family:'Inter',sans-serif;
+    font-weight:300;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  ::selection{background:var(--gold);color:var(--ink)}
+  a{color:inherit;text-decoration:none}
+  img{display:block;width:100%;height:100%;object-fit:cover}
+
+  .wrap{max-width:1320px;margin:0 auto;padding:0 32px}
+
+  /* ---------- nav ---------- */
+  nav{
+    position:fixed;top:0;left:0;right:0;z-index:50;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:26px 40px;
+    mix-blend-mode:difference;
+  }
+  .brand{
+    font-family:'Cormorant Garamond',serif;
+    font-size:22px;letter-spacing:.32em;text-transform:uppercase;
+    color:#fff;font-weight:500;
+  }
+  .navlinks{display:flex;gap:38px}
+  .navlinks a{
+    font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:#fff;
+    position:relative;padding-bottom:4px;
+  }
+  .navlinks a::after{
+    content:"";position:absolute;left:0;bottom:0;height:1px;width:0;background:#fff;
+    transition:width .5s var(--ease);
+  }
+  .navlinks a:hover::after{width:100%}
+  @media(max-width:760px){.navlinks{display:none}nav{padding:22px 24px}}
+
+  /* ---------- hero ---------- */
+  .hero{position:relative;height:100vh;min-height:680px;overflow:hidden}
+  #fx{position:absolute;inset:0;z-index:1;display:block}
+  .hero-img{
+    position:absolute;inset:0;z-index:0;
+    background:#000;
+  }
+  .hero-img img{opacity:.52;transform:scale(1.08);transition:transform 1.6s var(--ease)}
+  .hero-grad{
+    position:absolute;inset:0;z-index:2;
+    background:
+      radial-gradient(120% 80% at 50% 18%, rgba(11,11,15,0) 30%, rgba(11,11,15,.7) 100%),
+      linear-gradient(180deg, rgba(11,11,15,.55) 0%, rgba(11,11,15,0) 22%, rgba(11,11,15,0) 60%, var(--ink) 100%);
+  }
+  .hero-content{
+    position:absolute;inset:0;z-index:3;
+    display:flex;flex-direction:column;justify-content:center;align-items:center;
+    text-align:center;padding:0 24px;
+  }
+  .eyebrow{
+    font-size:11px;letter-spacing:.42em;text-transform:uppercase;color:var(--gold);
+    margin-bottom:30px;opacity:0;transform:translateY(14px);
+    animation:rise 1.1s var(--ease) .2s forwards;
+  }
+  .hero h1{
+    font-family:'Cormorant Garamond',serif;
+    font-weight:300;line-height:.9;letter-spacing:-.01em;
+    font-size:clamp(58px,12vw,168px);
+    mix-blend-mode:screen;color:#fff;
+  }
+  .hero h1 .line{display:block;overflow:hidden}
+  .hero h1 .line span{
+    display:block;transform:translateY(110%);
+    animation:reveal 1.3s var(--ease) forwards;
+  }
+  .hero h1 .line:nth-child(1) span{animation-delay:.35s}
+  .hero h1 .line:nth-child(2) span{animation-delay:.5s}
+  .hero h1 em{font-style:italic;color:var(--gold-bright)}
+  .hero-sub{
+    margin-top:34px;max-width:430px;font-size:15px;line-height:1.7;color:var(--taupe);
+    opacity:0;animation:fade 1.4s ease 1s forwards;
+  }
+  .scrollcue{
+    position:absolute;left:50%;bottom:34px;z-index:4;transform:translateX(-50%);
+    font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--taupe);
+    display:flex;flex-direction:column;align-items:center;gap:12px;
+    opacity:0;animation:fade 1.4s ease 1.4s forwards;
+  }
+  .scrollcue .bar{width:1px;height:46px;background:linear-gradient(var(--gold),transparent);animation:cue 2.2s var(--ease) infinite}
+  @keyframes cue{0%{transform:scaleY(0);transform-origin:top}45%{transform:scaleY(1);transform-origin:top}55%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+  @keyframes reveal{to{transform:translateY(0)}}
+  @keyframes rise{to{opacity:1;transform:translateY(0)}}
+  @keyframes fade{to{opacity:1}}
+
+  /* ---------- marquee strip ---------- */
+  .strip{border-top:1px solid var(--line);border-bottom:1px solid var(--line);overflow:hidden;padding:18px 0;background:var(--ink-soft)}
+  .marquee{display:flex;gap:64px;white-space:nowrap;width:max-content;animation:slide 32s linear infinite}
+  .marquee span{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:24px;color:var(--taupe)}
+  .marquee span b{color:var(--gold);font-style:normal;font-weight:400;margin-left:64px}
+  @keyframes slide{to{transform:translateX(-50%)}}
+
+  /* ---------- intro ---------- */
+  .intro{padding:140px 0 120px}
+  .intro-grid{display:grid;grid-template-columns:1fr 1.1fr;gap:80px;align-items:end}
+  .sec-label{font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--gold);margin-bottom:28px}
+  .intro h2{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(34px,4.4vw,62px);line-height:1.05}
+  .intro h2 em{font-style:italic;color:var(--gold-bright)}
+  .intro p{font-size:16px;line-height:1.85;color:var(--taupe);max-width:480px}
+  .intro p + p{margin-top:22px}
+  @media(max-width:860px){.intro-grid{grid-template-columns:1fr;gap:40px}.intro{padding:90px 0 80px}}
+
+  .reveal-up{opacity:0;transform:translateY(40px);transition:opacity 1.1s var(--ease),transform 1.1s var(--ease)}
+  .reveal-up.in{opacity:1;transform:none}
+
+  /* ---------- sequence (scroll-driven) ---------- */
+  .sequence{position:relative;height:300vh}
+  .seq-sticky{position:sticky;top:0;height:100vh;overflow:hidden;display:flex;align-items:center;justify-content:center}
+  .seq-frame{position:absolute;inset:0;opacity:0;transition:opacity .6s ease}
+  .seq-frame img{opacity:.72}
+  .seq-frame.on{opacity:1}
+  .seq-vig{position:absolute;inset:0;z-index:2;background:radial-gradient(110% 90% at 50% 50%,transparent 40%,rgba(11,11,15,.85) 100%)}
+  .seq-cap{position:relative;z-index:3;text-align:center;mix-blend-mode:difference}
+  .seq-cap .n{font-size:11px;letter-spacing:.4em;color:var(--gold);text-transform:uppercase}
+  .seq-cap h3{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(40px,8vw,110px);line-height:1;margin-top:16px;color:#fff}
+  .seq-cap em{font-style:italic;color:var(--gold-bright)}
+  .seq-progress{position:absolute;left:40px;bottom:40px;z-index:4;display:flex;gap:10px}
+  .seq-progress i{width:30px;height:2px;background:rgba(242,237,228,.18);transition:background .4s}
+  .seq-progress i.on{background:var(--gold)}
+
+  /* ---------- editorial split ---------- */
+  .editorial{padding:130px 0}
+  .ed-row{display:grid;grid-template-columns:1fr 1fr;gap:0;align-items:stretch;min-height:74vh}
+  .ed-media{position:relative;overflow:hidden}
+  .ed-media img{transition:transform 1.4s var(--ease);opacity:.85}
+  .ed-row:hover .ed-media img{transform:scale(1.06)}
+  .ed-text{display:flex;flex-direction:column;justify-content:center;padding:0 70px}
+  .ed-text.left{order:-1}
+  .ed-text .idx{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:80px;color:var(--line);line-height:1}
+  .ed-text h3{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(30px,3.6vw,52px);line-height:1.08;margin:14px 0 22px}
+  .ed-text p{font-size:15px;line-height:1.85;color:var(--taupe);max-width:400px}
+  .ed-stats{display:flex;gap:48px;margin-top:40px}
+  .ed-stats div span{display:block;font-family:'Cormorant Garamond',serif;font-size:42px;color:var(--gold-bright);line-height:1}
+  .ed-stats div small{font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--taupe);margin-top:8px;display:block}
+  @media(max-width:860px){.ed-row{grid-template-columns:1fr;min-height:0}.ed-media{height:56vh}.ed-text{padding:48px 28px}.ed-text.left{order:0}.editorial{padding:80px 0}}
+
+  /* ---------- spaces grid ---------- */
+  .spaces{padding:40px 0 130px}
+  .spaces-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:54px;flex-wrap:wrap;gap:20px}
+  .spaces-head h2{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(32px,4.4vw,58px);line-height:1}
+  .spaces-head h2 em{font-style:italic;color:var(--gold-bright)}
+  .spaces-head p{font-size:14px;color:var(--taupe);max-width:300px;line-height:1.7}
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .card{position:relative;height:440px;overflow:hidden;cursor:pointer;border:1px solid transparent;transition:border-color .6s}
+  .card img{transition:transform 1.2s var(--ease),opacity 1.2s var(--ease);opacity:.7}
+  .card:hover{border-color:var(--line)}
+  .card:hover img{transform:scale(1.08);opacity:.92}
+  .card-grad{position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(11,11,15,.92) 100%)}
+  .card-body{position:absolute;left:0;right:0;bottom:0;padding:30px;z-index:2}
+  .card-body .ct{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold)}
+  .card-body h4{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:30px;margin-top:10px}
+  .card-body .meta{font-size:13px;color:var(--taupe);margin-top:6px;max-height:0;overflow:hidden;opacity:0;transition:max-height .6s var(--ease),opacity .6s var(--ease)}
+  .card:hover .card-body .meta{max-height:60px;opacity:1}
+  @media(max-width:860px){.cards{grid-template-columns:1fr}.card{height:380px}}
+
+  /* ---------- quote ---------- */
+  .quote{padding:150px 0;text-align:center;border-top:1px solid var(--line)}
+  .quote blockquote{font-family:'Cormorant Garamond',serif;font-weight:300;font-style:italic;font-size:clamp(30px,5vw,68px);line-height:1.18;max-width:980px;margin:0 auto}
+  .quote blockquote span{color:var(--gold-bright)}
+  .quote cite{display:block;margin-top:42px;font-style:normal;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--taupe)}
+
+  /* ---------- cta ---------- */
+  .cta{position:relative;padding:160px 0;overflow:hidden;text-align:center}
+  .cta-bg{position:absolute;inset:0;z-index:0}
+  .cta-bg img{opacity:.3}
+  .cta-bg::after{content:"";position:absolute;inset:0;background:radial-gradient(100% 100% at 50% 50%,rgba(11,11,15,.4),var(--ink))}
+  .cta-inner{position:relative;z-index:2}
+  .cta .eyebrow{animation:none;opacity:1;transform:none}
+  .cta h2{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(40px,7vw,104px);line-height:1;margin:24px 0 40px}
+  .cta h2 em{font-style:italic;color:var(--gold-bright)}
+  .btn{
+    display:inline-block;padding:18px 44px;border:1px solid var(--gold);
+    font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:var(--bone);
+    position:relative;overflow:hidden;transition:color .5s var(--ease);z-index:1;
+  }
+  .btn::before{content:"";position:absolute;inset:0;background:var(--gold);transform:translateY(101%);transition:transform .5s var(--ease);z-index:-1}
+  .btn:hover{color:var(--ink)}
+  .btn:hover::before{transform:translateY(0)}
+
+  /* ---------- footer ---------- */
+  footer{border-top:1px solid var(--line);padding:60px 0 40px}
+  .foot-grid{display:flex;justify-content:space-between;flex-wrap:wrap;gap:40px}
+  .foot-brand{font-family:'Cormorant Garamond',serif;font-size:26px;letter-spacing:.2em;text-transform:uppercase}
+  .foot-brand small{display:block;font-family:'Inter';font-size:11px;letter-spacing:.1em;color:var(--taupe);margin-top:14px;text-transform:none}
+  .foot-col h5{font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--gold);margin-bottom:18px}
+  .foot-col a,.foot-col p{display:block;font-size:13px;color:var(--taupe);margin-bottom:10px;transition:color .4s}
+  .foot-col a:hover{color:var(--bone)}
+  .foot-base{margin-top:54px;padding-top:24px;border-top:1px solid var(--line);display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;font-size:11px;letter-spacing:.1em;color:var(--taupe)}
+
+  @media(prefers-reduced-motion:reduce){
+    *{animation-duration:.001ms!important;transition-duration:.001ms!important}
+    .hero h1 .line span{transform:none}
+    .eyebrow,.hero-sub,.scrollcue{opacity:1;transform:none}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="brand">Ambassador</div>
+  <div class="navlinks">
+    <a href="#spaces">The Spaces</a>
+    <a href="#story">Heritage</a>
+    <a href="#enquire">Enquire</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-img"><img id="heroPhoto" alt="" /></div>
+  <canvas id="fx"></canvas>
+  <div class="hero-grad"></div>
+  <div class="hero-content">
+    <div class="eyebrow">Est. 1924 — A Landmark Ballroom</div>
+    <h1>
+      <span class="line"><span>Where evenings</span></span>
+      <span class="line"><span>become <em>history</em></span></span>
+    </h1>
+    <p class="hero-sub">A gilded room of nine hundred candles, twelve-metre ceilings, and a century of celebrated nights — reserved, on occasion, for yours.</p>
+  </div>
+  <div class="scrollcue"><span>Scroll</span><span class="bar"></span></div>
+</header>
+
+<!-- MARQUEE -->
+<div class="strip">
+  <div class="marquee" id="marq">
+    <span>Weddings<b>·</b>Galas<b>·</b>State Dinners<b>·</b>Premieres<b>·</b>Coronation Balls<b>·</b>Private Receptions<b>·</b>Weddings<b>·</b>Galas<b>·</b>State Dinners<b>·</b>Premieres<b>·</b>Coronation Balls<b>·</b>Private Receptions<b>·</b></span>
+  </div>
+</div>
+
+<!-- INTRO -->
+<section class="intro wrap" id="story">
+  <div class="intro-grid">
+    <div class="reveal-up">
+      <div class="sec-label">The Room</div>
+      <h2>An address that <em>announces</em> the occasion before a single guest arrives.</h2>
+    </div>
+    <div class="reveal-up">
+      <p>Some rooms are booked. The Ambassador is inherited — passed from one unforgettable night to the next since the spring of 1924, when its doors first opened beneath a ceiling leafed in gold.</p>
+      <p>Beneath nine hand-blown chandeliers, the grand hall seats five hundred for dinner and holds twice that for the dance that follows. Every detail — the marble, the mirrorwork, the light — was made to be remembered.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SEQUENCE -->
+<section class="sequence" id="spaces">
+  <div class="seq-sticky">
+    <div class="seq-frame on" data-i="0"><img alt="" /></div>
+    <div class="seq-frame" data-i="1"><img alt="" /></div>
+    <div class="seq-frame" data-i="2"><img alt="" /></div>
+    <div class="seq-vig"></div>
+    <div class="seq-cap">
+      <div class="n" id="seqN">01 — Arrival</div>
+      <h3 id="seqH">The <em>Colonnade</em></h3>
+    </div>
+    <div class="seq-progress"><i class="on"></i><i></i><i></i></div>
+  </div>
+</section>
+
+<!-- EDITORIAL -->
+<section class="editorial wrap">
+  <div class="ed-row reveal-up">
+    <div class="ed-media"><img id="ed1" alt="" /></div>
+    <div class="ed-text">
+      <div class="idx">i.</div>
+      <h3>A ceiling worth looking up for.</h3>
+      <p>Restored leaf by leaf over three years, the gilded dome carries the original 1924 frieze — forty metres of it, lit so softly the gold seems to breathe.</p>
+      <div class="ed-stats">
+        <div><span>900</span><small>Candles</small></div>
+        <div><span>12m</span><small>Ceiling height</small></div>
+        <div><span>1924</span><small>First opened</small></div>
+      </div>
+    </div>
+  </div>
+  <div class="ed-row reveal-up">
+    <div class="ed-text left">
+      <div class="idx">ii.</div>
+      <h3>Dinner for five hundred. Dancing for a thousand.</h3>
+      <p>The hall divides into intimate salons or opens whole. A retractable stage, a sprung parquet floor, and acoustics tuned for a full orchestra — the room adapts to the night you imagine.</p>
+      <div class="ed-stats">
+        <div><span>500</span><small>Seated guests</small></div>
+        <div><span>1,000</span><small>Standing</small></div>
+      </div>
+    </div>
+    <div class="ed-media"><img id="ed2" alt="" /></div>
+  </div>
+</section>
+
+<!-- SPACES GRID -->
+<section class="spaces wrap">
+  <div class="spaces-head reveal-up">
+    <h2>Four rooms, <em>one address</em></h2>
+    <p>Each space holds its own character — choose one, or take the floor entire.</p>
+  </div>
+  <div class="cards">
+    <div class="card reveal-up">
+      <img id="c1" alt="" /><div class="card-grad"></div>
+      <div class="card-body"><div class="ct">Up to 500</div><h4>The Grand Hall</h4><div class="meta">The principal ballroom, beneath the gilded dome.</div></div>
+    </div>
+    <div class="card reveal-up">
+      <img id="c2" alt="" /><div class="card-grad"></div>
+      <div class="card-body"><div class="ct">Up to 120</div><h4>The Mirror Salon</h4><div class="meta">An intimate room walled in antique glass.</div></div>
+    </div>
+    <div class="card reveal-up">
+      <img id="c3" alt="" /><div class="card-grad"></div>
+      <div class="card-body"><div class="ct">Up to 60</div><h4>The Library</h4><div class="meta">Walnut, firelight, and quiet for the toast.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- QUOTE -->
+<section class="quote wrap">
+  <blockquote>"We have hosted three generations of one family in this room. <span>You do not rent the Ambassador — you join its history.</span>"</blockquote>
+  <cite>— The Keeper of the Hall</cite>
+</section>
+
+<!-- CTA -->
+<section class="cta" id="enquire">
+  <div class="cta-bg"><img id="ctaPhoto" alt="" /></div>
+  <div class="cta-inner wrap">
+    <div class="eyebrow">By private appointment</div>
+    <h2>Reserve <em>the evening</em></h2>
+    <a href="#" class="btn">Request a viewing</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="wrap">
+  <div class="foot-grid">
+    <div>
+      <div class="foot-brand">Ambassador<small>A Grand Ballroom · Est. 1924</small></div>
+    </div>
+    <div class="foot-col">
+      <h5>Visit</h5>
+      <p>1 Esplanade Court</p>
+      <p>By appointment only</p>
+    </div>
+    <div class="foot-col">
+      <h5>Enquiries</h5>
+      <a href="#">events@ambassadorhall.com</a>
+      <a href="#">+1 (000) 000—0000</a>
+    </div>
+    <div class="foot-col">
+      <h5>Follow</h5>
+      <a href="#">Instagram</a>
+      <a href="#">Pinterest</a>
+    </div>
+  </div>
+  <div class="foot-base">
+    <span>© 2026 The Ambassador. All rights reserved.</span>
+    <span>Concept site — imagery for demonstration.</span>
+  </div>
+</footer>
+
+<script>
+/* ---------------------------------------------------
+   PLACEHOLDER IMAGERY
+   Swap these URLs for real venue photos later.
+   Order: hero, seq0, seq1, seq2, ed1, ed2, c1, c2, c3, cta
+---------------------------------------------------- */
+const IMAGES = {
+  hero:"https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=2000&auto=format&fit=crop",
+  seq0:"https://images.unsplash.com/photo-1505236858219-8359eb29e329?q=80&w=2000&auto=format&fit=crop",
+  seq1:"https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?q=80&w=2000&auto=format&fit=crop",
+  seq2:"https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=2000&auto=format&fit=crop",
+  ed1:"https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=2000&auto=format&fit=crop",
+  ed2:"https://images.unsplash.com/photo-1530103862676-de8c9debad1d?q=80&w=2000&auto=format&fit=crop",
+  c1:"https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=1400&auto=format&fit=crop",
+  c2:"https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?q=80&w=1400&auto=format&fit=crop",
+  c3:"https://images.unsplash.com/photo-1513151233558-d860c5398176?q=80&w=1400&auto=format&fit=crop",
+  cta:"https://images.unsplash.com/photo-1505236858219-8359eb29e329?q=80&w=2000&auto=format&fit=crop"
+};
+const set=(id,src)=>{const el=document.getElementById(id);if(el)el.src=src;};
+set("heroPhoto",IMAGES.hero);
+document.querySelectorAll(".seq-frame").forEach(f=>{f.querySelector("img").src=IMAGES["seq"+f.dataset.i];});
+set("ed1",IMAGES.ed1);set("ed2",IMAGES.ed2);
+set("c1",IMAGES.c1);set("c2",IMAGES.c2);set("c3",IMAGES.c3);
+set("ctaPhoto",IMAGES.cta);
+
+/* ---------- WebGL: candlelight dust field ---------- */
+(function(){
+  const canvas=document.getElementById("fx");
+  const gl=canvas.getContext("webgl",{alpha:true,antialias:true});
+  if(!gl){canvas.style.display="none";return;}
+  const reduce=window.matchMedia("(prefers-reduced-motion:reduce)").matches;
+
+  const vs=`attribute vec2 p;attribute float s;attribute float a;
+  uniform float t;uniform vec2 res;varying float v;
+  void main(){
+    float x=p.x+sin(t*0.12+p.y*6.2)*0.018;
+    float y=mod(p.y+t*0.012,1.0);
+    v=a*(0.4+0.6*sin(t*0.6+a*30.0));
+    gl_Position=vec4(x*2.0-1.0,1.0-y*2.0,0.0,1.0);
+    gl_PointSize=s*(res.y/900.0);
+  }`;
+  const fs=`precision mediump float;varying float v;
+  void main(){
+    vec2 c=gl_PointCoord-0.5;float d=length(c);
+    if(d>0.5)discard;
+    float g=smoothstep(0.5,0.0,d);
+    gl_FragColor=vec4(0.886,0.733,0.42,g*v*0.9);
+  }`;
+  function sh(t,s){const o=gl.createShader(t);gl.shaderSource(o,s);gl.compileShader(o);return o;}
+  const prog=gl.createProgram();
+  gl.attachShader(prog,sh(gl.VERTEX_SHADER,vs));
+  gl.attachShader(prog,sh(gl.FRAGMENT_SHADER,fs));
+  gl.linkProgram(prog);gl.useProgram(prog);
+
+  const N=reduce?40:260;
+  const pos=new Float32Array(N*2),siz=new Float32Array(N),alp=new Float32Array(N);
+  for(let i=0;i<N;i++){pos[i*2]=Math.random();pos[i*2+1]=Math.random();siz[i]=2+Math.random()*6;alp[i]=0.2+Math.random()*0.8;}
+  function buf(data,loc,size){const b=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,b);gl.bufferData(gl.ARRAY_BUFFER,data,gl.STATIC_DRAW);const l=gl.getAttribLocation(prog,loc);gl.enableVertexAttribArray(l);gl.vertexAttribPointer(l,size,gl.FLOAT,false,0,0);}
+  buf(pos,"p",2);buf(siz,"s",1);buf(alp,"a",1);
+  const uT=gl.getUniformLocation(prog,"t"),uR=gl.getUniformLocation(prog,"res");
+  gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE);
+
+  function resize(){const d=Math.min(window.devicePixelRatio||1,2);canvas.width=canvas.clientWidth*d;canvas.height=canvas.clientHeight*d;gl.viewport(0,0,canvas.width,canvas.height);}
+  window.addEventListener("resize",resize);resize();
+
+  let raf;
+  function draw(ms){gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT);gl.uniform1f(uT,ms*0.001);gl.uniform2f(uR,canvas.width,canvas.height);gl.drawArrays(gl.POINTS,0,N);raf=requestAnimationFrame(draw);}
+  raf=requestAnimationFrame(draw);
+})();
+
+/* ---------- scroll-driven sequence ---------- */
+(function(){
+  const seq=document.querySelector(".sequence");
+  const frames=[...document.querySelectorAll(".seq-frame")];
+  const dots=[...document.querySelectorAll(".seq-progress i")];
+  const caps=[["01 — Arrival","The <em>Colonnade</em>"],["02 — The Hall","Beneath the <em>Dome</em>"],["03 — The Dance","Until <em>Sunrise</em>"]];
+  const nEl=document.getElementById("seqN"),hEl=document.getElementById("seqH");
+  let cur=-1;
+  function onScroll(){
+    const r=seq.getBoundingClientRect();
+    const total=seq.offsetHeight-window.innerHeight;
+    let p=Math.min(Math.max(-r.top/total,0),0.999);
+    const i=Math.floor(p*frames.length);
+    if(i!==cur){cur=i;
+      frames.forEach((f,k)=>f.classList.toggle("on",k===i));
+      dots.forEach((d,k)=>d.classList.toggle("on",k<=i));
+      nEl.textContent=caps[i][0];hEl.innerHTML=caps[i][1];
+    }
+  }
+  window.addEventListener("scroll",onScroll,{passive:true});onScroll();
+})();
+
+/* ---------- reveal on scroll ---------- */
+(function(){
+  const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target);}});},{threshold:.18});
+  document.querySelectorAll(".reveal-up").forEach(el=>io.observe(el));
+})();
+
+/* hero photo settle */
+window.addEventListener("load",()=>{const h=document.getElementById("heroPhoto");if(h)h.style.transform="scale(1)";});
+</script>
+</body>
+</html>
