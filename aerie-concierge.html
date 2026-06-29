@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Aerie — Concierge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --night:#070A12;--night-2:#0C111C;--panel:#10172480;
+    --glass:#9FB2CE;--neon:#F25C54;--gold:#E9C46A;
+    --paper:#EEF1F7;--mute:#7C879B;--line:rgba(159,178,206,.18);
+    --ease:cubic-bezier(.22,.61,.36,1);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--night);color:var(--paper);font-family:'Inter',sans-serif;font-weight:300;-webkit-font-smoothing:antialiased;min-height:100vh;
+    background-image:radial-gradient(60% 50% at 80% 0%,rgba(30,58,95,.4),transparent 60%),radial-gradient(50% 40% at 10% 100%,rgba(242,92,84,.08),transparent 60%);}
+  ::selection{background:var(--neon);color:#fff}
+  .shell{max-width:560px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;padding:0 18px}
+
+  header{display:flex;align-items:center;gap:14px;padding:26px 6px 20px}
+  .crest{width:42px;height:42px;border-radius:50%;border:1px solid var(--gold);display:grid;place-items:center;color:var(--gold);font-family:'Fraunces',serif;font-size:20px;background:radial-gradient(circle at 30% 25%,rgba(233,196,106,.18),transparent 70%)}
+  .htext b{font-family:'Fraunces',serif;font-weight:400;font-size:21px;letter-spacing:.16em;text-transform:uppercase;display:block;line-height:1}
+  .htext small{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:7px;margin-top:6px}
+  .live-dot{width:6px;height:6px;border-radius:50%;background:#6fcf8e;box-shadow:0 0 8px #6fcf8e;animation:pulse 2s infinite}
+  @keyframes pulse{50%{opacity:.4}}
+
+  .chat{flex:1;overflow-y:auto;padding:8px 4px 16px;display:flex;flex-direction:column;gap:16px;scroll-behavior:smooth}
+  .msg{max-width:84%;font-size:15px;line-height:1.6;animation:up .5s var(--ease)}
+  @keyframes up{from{opacity:0;transform:translateY(10px)}}
+  .msg.bot{align-self:flex-start}
+  .msg.bot .bubble{background:var(--night-2);border:1px solid var(--line);border-radius:4px 16px 16px 16px;padding:14px 17px}
+  .msg.me{align-self:flex-end}
+  .msg.me .bubble{background:linear-gradient(180deg,rgba(242,92,84,.22),rgba(242,92,84,.12));border:1px solid rgba(242,92,84,.4);border-radius:16px 4px 16px 16px;padding:14px 17px;color:#fff}
+  .msg .who{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--mute);margin-bottom:7px;padding-left:2px}
+  .msg.me .who{text-align:right;color:rgba(242,92,84,.8)}
+  .bubble strong{color:var(--gold);font-weight:500}
+  .bubble em{color:var(--glass);font-style:normal}
+
+  .typing{display:flex;gap:5px;padding:16px 18px;background:var(--night-2);border:1px solid var(--line);border-radius:4px 16px 16px 16px;width:fit-content}
+  .typing i{width:7px;height:7px;border-radius:50%;background:var(--mute);animation:blink 1.3s infinite}
+  .typing i:nth-child(2){animation-delay:.2s}.typing i:nth-child(3){animation-delay:.4s}
+  @keyframes blink{0%,60%,100%{opacity:.25;transform:translateY(0)}30%{opacity:1;transform:translateY(-3px)}}
+
+  .chips{display:flex;flex-wrap:wrap;gap:8px;padding:4px 4px 14px}
+  .chip{font-size:12.5px;letter-spacing:.02em;color:var(--paper);background:rgba(159,178,206,.06);border:1px solid var(--line);border-radius:30px;padding:9px 15px;cursor:pointer;transition:all .3s var(--ease);white-space:nowrap}
+  .chip:hover{border-color:var(--gold);color:var(--gold);transform:translateY(-2px)}
+
+  .composer{position:sticky;bottom:0;padding:12px 0 20px;background:linear-gradient(transparent,var(--night) 24%)}
+  .composer-inner{display:flex;gap:10px;align-items:flex-end;background:var(--night-2);border:1px solid var(--line);border-radius:14px;padding:8px 8px 8px 16px;transition:border-color .3s}
+  .composer-inner:focus-within{border-color:rgba(233,196,106,.5)}
+  textarea{flex:1;background:none;border:none;color:var(--paper);font-family:inherit;font-size:15px;resize:none;outline:none;max-height:120px;line-height:1.5;padding:7px 0}
+  textarea::placeholder{color:var(--mute)}
+  .send{width:40px;height:40px;border-radius:10px;border:none;cursor:pointer;background:linear-gradient(180deg,var(--neon),#d8453d);color:#fff;display:grid;place-items:center;flex-shrink:0;transition:transform .2s,opacity .2s}
+  .send:hover{transform:scale(1.06)}
+  .send:disabled{opacity:.4;cursor:default;transform:none}
+  .send svg{width:18px;height:18px}
+  .hint{text-align:center;font-size:11px;color:var(--mute);margin-top:10px;letter-spacing:.04em}
+  .hint b{color:var(--gold);font-weight:500}
+
+  /* lead capture card */
+  .leadcard{background:var(--night-2);border:1px solid rgba(233,196,106,.35);border-radius:4px 16px 16px 16px;padding:20px;max-width:84%;align-self:flex-start;animation:up .5s var(--ease)}
+  .leadcard h4{font-family:'Fraunces',serif;font-weight:400;font-size:20px;margin-bottom:4px}
+  .leadcard p{font-size:13px;color:var(--mute);margin-bottom:16px;line-height:1.5}
+  .leadcard .f{margin-bottom:10px}
+  .leadcard label{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:6px}
+  .leadcard input{width:100%;background:var(--night);border:1px solid var(--line);border-radius:8px;padding:11px 13px;color:var(--paper);font-family:inherit;font-size:14px;outline:none;transition:border-color .3s}
+  .leadcard input:focus{border-color:var(--gold)}
+  .leadcard .lc-btn{width:100%;margin-top:8px;padding:13px;border:none;border-radius:8px;background:linear-gradient(180deg,var(--gold),#cda94f);color:#1a1206;font-family:inherit;font-weight:600;font-size:13px;letter-spacing:.04em;cursor:pointer;transition:transform .2s}
+  .leadcard .lc-btn:hover{transform:translateY(-2px)}
+  .leadcard.done{text-align:center;border-color:rgba(111,207,142,.4)}
+  .leadcard.done .check{width:46px;height:46px;border-radius:50%;border:1px solid #6fcf8e;color:#6fcf8e;display:grid;place-items:center;margin:0 auto 14px;font-size:22px}
+</style>
+</head>
+<body>
+<div class="shell">
+  <header>
+    <div class="crest">A</div>
+    <div class="htext">
+      <b>The Aerie</b>
+      <small><span class="live-dot"></span> Concierge · replies instantly</small>
+    </div>
+  </header>
+
+  <div class="chat" id="chat"></div>
+
+  <div class="chips" id="chips"></div>
+
+  <div class="composer">
+    <div class="composer-inner">
+      <textarea id="input" rows="1" placeholder="Ask about dates, capacity, pricing…"></textarea>
+      <button class="send" id="send" aria-label="Send">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </button>
+    </div>
+    <div class="hint">A demo concierge for <b>The Aerie</b> · built by Barone Studio</div>
+  </div>
+</div>
+
+<script>
+/* =====================================================================
+   VENUE KNOWLEDGE BASE  —  edit this object per venue.
+   The concierge answers from here instantly with no backend.
+   (Set USE_LIVE_AI = true + deploy api/chat.js to upgrade to real Claude.)
+===================================================================== */
+const VENUE = {
+  name:"The Aerie",
+  blurb:"a rooftop venue forty floors above the city, open-air on every side",
+  knowledge:[
+    { tags:["capacity","how many","fit","seat","hold","size","people","big","accommodate"],
+      a:"The Aerie holds <strong>up to 220 seated</strong> for a plated reception and <strong>320 for cocktail-style</strong> events across two open-air terraces and the glass lounge. Smaller gatherings of 40–60 work beautifully in the Observation Suite. How many guests are you planning for?" },
+    { tags:["price","cost","pricing","how much","rate","budget","expensive","fee","package"],
+      a:"Pricing runs by season and day. As a guide: <strong>weekday events from $6,500</strong>, <strong>Saturdays from $14,000</strong> for exclusive use of the terrace and lounge — including tables, chairs, and the in-house bar. Full catering is quoted per head. Want me to have the events team send a detailed quote for your date?" },
+    { tags:["date","available","availability","book","when","2026","2027","free","open","calendar"],
+      a:"Sunset dates book first, often <em>9–12 months out</em>. Spring and fall Saturdays go quickest. If you share your ideal month, I can check the live calendar and hold a tentative date for you — shall I take a few details?" },
+    { tags:["catering","food","menu","chef","drink","bar","alcohol","dinner","cocktail","cuisine"],
+      a:"Catering is <strong>in-house</strong> — a dedicated executive chef with seasonal, customizable menus, plus a full marble bar with craft cocktails. We accommodate dietary needs, cultural menus, and tastings are included once a date is held." },
+    { tags:["parking","park","parked","valet","getting there","elevator","floor","arrive","arrival","drive","car"],
+      a:"Guests arrive via two express elevators to the 40th floor. <strong>Valet parking</strong> is available in the building, and we're a short walk from transit. We provide an arrival guide for your invitations." },
+    { tags:["weather","rain","cold","winter","season","outdoor","canopy","temperature","snow"],
+      a:"The terrace is built for any season — a <strong>retractable glass canopy and heaters</strong> mean rain or cold never cancels a night, and the interior glass lounge is always climate-kept as a seamless backup." },
+    { tags:["ceremony","wedding","vows","marry","married","marriage","aisle","officiant"],
+      a:"Yes — many couples hold the <strong>ceremony at sunset</strong> on the west terrace, then move to the lounge for dinner and dancing as the skyline lights up. We coordinate the full timeline with your planner." },
+    { tags:["tour","visit","viewing","walkthrough","in person"],
+      a:"We'd love to show you the view in person — tours are by appointment, ideally late afternoon so you catch golden hour. I can arrange one; want me to grab your details?" }
+  ],
+  fallback:"That's a great question — for the specifics I'll connect you with the events team, who handle every detail personally. In the meantime I can help with capacity, pricing, available dates, catering, or arranging a sunset tour. What would be most useful?",
+  greeting:"Welcome to <strong>The Aerie</strong> — a rooftop forty floors above the city. I'm the venue concierge, here to help with dates, capacity, pricing, or catering. What can I tell you about your event?",
+  chips:["What's the capacity?","Pricing for a Saturday","Is my date available?","Tell me about catering","Can we hold the ceremony here?"],
+  bookingIntent:["book","hold","reserve","my date","tentative","check the calendar","send a quote","tour","viewing","details","interested"]
+};
+
+/* ============== live-AI toggle (optional upgrade) ==============
+   Leave false and it runs entirely on the knowledge base above.
+   To go live: deploy the included api/chat.js Vercel function,
+   set ANTHROPIC_API_KEY in Vercel, then set this to true.        */
+const USE_LIVE_AI = false;
+const AI_ENDPOINT = "/api/chat";
+
+/* ===================== engine ===================== */
+const chat=document.getElementById("chat");
+const chipsEl=document.getElementById("chips");
+const input=document.getElementById("input");
+const sendBtn=document.getElementById("send");
+let history=[];
+let leadShown=false;
+
+function bubble(text,who){
+  const m=document.createElement("div");
+  m.className="msg "+(who==="me"?"me":"bot");
+  m.innerHTML=`<div class="who">${who==="me"?"You":"Concierge"}</div><div class="bubble">${text}</div>`;
+  chat.appendChild(m);chat.scrollTop=chat.scrollHeight;
+}
+function typing(on){
+  let t=document.getElementById("typing");
+  if(on){if(!t){t=document.createElement("div");t.id="typing";t.className="typing";t.innerHTML="<i></i><i></i><i></i>";chat.appendChild(t);chat.scrollTop=chat.scrollHeight;}}
+  else if(t)t.remove();
+}
+function renderChips(list){
+  chipsEl.innerHTML="";
+  list.forEach(c=>{const b=document.createElement("button");b.className="chip";b.textContent=c;b.onclick=()=>{send(c);};chipsEl.appendChild(b);});
+}
+
+/* knowledge-base matcher: score each entry by tag hits */
+function localAnswer(q){
+  const s=q.toLowerCase();
+  let best=null,bestScore=0;
+  VENUE.knowledge.forEach(k=>{
+    if(!k.a)return;
+    let score=0;
+    k.tags.forEach(t=>{ if(s.includes(t)) score+= t.length>4?2:1; });
+    if(score>bestScore){bestScore=score;best=k;}
+  });
+  return bestScore>0?best.a:VENUE.fallback;
+}
+function wantsBooking(q){
+  const s=q.toLowerCase();
+  return VENUE.bookingIntent.some(t=>s.includes(t));
+}
+
+async function liveAnswer(q){
+  const sys=`You are the warm, concise concierge for ${VENUE.name}, ${VENUE.blurb}. Answer questions about the venue helpfully in 2-4 sentences. Use this venue knowledge: ${VENUE.knowledge.map(k=>k.a).filter(Boolean).join(" ")}. If they show booking intent, encourage them to leave details. Never invent specifics you weren't given.`;
+  history.push({role:"user",content:q});
+  const res=await fetch(AI_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({system:sys,messages:history})});
+  if(!res.ok)throw new Error("ai");
+  const data=await res.json();
+  const text=(data.content||[]).filter(b=>b.type==="text").map(b=>b.text).join("\n")||VENUE.fallback;
+  history.push({role:"assistant",content:text});
+  return text;
+}
+
+function showLeadCard(){
+  if(leadShown)return;leadShown=true;
+  const c=document.createElement("div");
+  c.className="leadcard";c.id="leadcard";
+  c.innerHTML=`
+    <h4>Hold your date</h4>
+    <p>Leave your details and the events team will confirm availability — usually same day.</p>
+    <div class="f"><label>Name</label><input id="ld-name" placeholder="Your name"></div>
+    <div class="f"><label>Email</label><input id="ld-email" type="email" placeholder="you@email.com"></div>
+    <div class="f"><label>Event date (approx.)</label><input id="ld-date" placeholder="e.g. October 2026"></div>
+    <button class="lc-btn" id="ld-send">Request availability →</button>`;
+  chat.appendChild(c);chat.scrollTop=chat.scrollHeight;
+  document.getElementById("ld-send").onclick=submitLead;
+}
+function submitLead(){
+  const name=document.getElementById("ld-name").value.trim();
+  const email=document.getElementById("ld-email").value.trim();
+  const date=document.getElementById("ld-date").value.trim();
+  if(!name||!email){
+    if(!name)document.getElementById("ld-name").style.borderColor=VENUE_NEON();
+    if(!email)document.getElementById("ld-email").style.borderColor=VENUE_NEON();
+    return;
+  }
+  /* ---- swap this block for a Supabase insert to capture leads live ----
+     await fetch('/api/lead',{method:'POST',body:JSON.stringify({name,email,date})});
+  -------------------------------------------------------------------- */
+  const card=document.getElementById("leadcard");
+  card.classList.add("done");
+  card.innerHTML=`<div class="check">✓</div><h4>Thank you, ${name.split(" ")[0]}.</h4><p style="margin-bottom:0">The events team has your request${date?` for <strong>${date}</strong>`:""} and will reply to <strong>${email}</strong> shortly.</p>`;
+  chat.scrollTop=chat.scrollHeight;
+}
+function VENUE_NEON(){return "#F25C54";}
+
+async function send(text){
+  text=(text||input.value).trim();
+  if(!text)return;
+  input.value="";autosize();
+  bubble(text,"me");
+  chipsEl.innerHTML="";
+  typing(true);
+  sendBtn.disabled=true;
+  const booking=wantsBooking(text);
+  try{
+    const reply = USE_LIVE_AI ? await liveAnswer(text) : localAnswer(text);
+    await new Promise(r=>setTimeout(r, USE_LIVE_AI?0:550)); // human pacing for local
+    typing(false);
+    bubble(reply,"bot");
+    if(booking) showLeadCard();
+  }catch(e){
+    typing(false);
+    bubble(localAnswer(text),"bot");
+    if(booking) showLeadCard();
+  }
+  sendBtn.disabled=false;
+  input.focus();
+}
+
+function autosize(){input.style.height="auto";input.style.height=Math.min(input.scrollHeight,120)+"px";}
+input.addEventListener("input",autosize);
+input.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send();}});
+sendBtn.addEventListener("click",()=>send());
+
+/* boot */
+setTimeout(()=>{bubble(VENUE.greeting,"bot");renderChips(VENUE.chips);},400);
+</script>
+</body>
+</html>
