@@ -153,6 +153,40 @@
     *{animation-duration:.001ms!important;transition-duration:.001ms!important}
     .hero h1 .line span{transform:none}.eyebrow,.hero-sub,.scrollcue{opacity:1;transform:none}
   }
+
+  /* ---------- concierge launcher + slide-out ---------- */
+  .concierge-fab{
+    position:fixed;right:26px;bottom:26px;z-index:80;
+    display:flex;align-items:center;gap:11px;
+    padding:13px 20px 13px 16px;border-radius:40px;cursor:pointer;
+    background:linear-gradient(180deg,#F25C54,#d8453d);color:#fff;
+    border:none;font-family:'Inter',sans-serif;font-size:14px;font-weight:500;letter-spacing:.02em;
+    box-shadow:0 12px 34px -10px rgba(242,92,84,.7);
+    transition:transform .3s var(--ease),box-shadow .3s var(--ease);
+    animation:fabIn .6s var(--ease) 1.6s both;
+  }
+  .concierge-fab:hover{transform:translateY(-3px);box-shadow:0 18px 40px -10px rgba(242,92,84,.85)}
+  .concierge-fab svg{width:20px;height:20px}
+  .concierge-fab .fab-dot{width:7px;height:7px;border-radius:50%;background:#fff;box-shadow:0 0 8px #fff;animation:pulse 2s infinite}
+  @keyframes fabIn{from{opacity:0;transform:translateY(20px) scale(.9)}}
+  @keyframes pulse{50%{opacity:.4}}
+  @media(max-width:600px){.concierge-fab{right:16px;bottom:16px;padding:12px 18px}}
+
+  .cx-overlay{position:fixed;inset:0;z-index:90;background:rgba(3,5,10,.55);backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .4s var(--ease)}
+  .cx-overlay.open{opacity:1;pointer-events:auto}
+  .cx-panel{
+    position:fixed;top:0;right:0;z-index:91;height:100%;
+    width:min(440px,100%);transform:translateX(102%);
+    transition:transform .5s var(--ease);
+    background:var(--night);box-shadow:-30px 0 60px -20px rgba(0,0,0,.7);
+    display:flex;flex-direction:column;
+  }
+  .cx-panel.open{transform:none}
+  .cx-bar{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(--line);flex-shrink:0}
+  .cx-bar span{font-family:'Fraunces',serif;font-size:15px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold)}
+  .cx-close{background:none;border:none;color:var(--mute);cursor:pointer;font-size:26px;line-height:1;width:34px;height:34px;border-radius:8px;transition:background .25s,color .25s}
+  .cx-close:hover{background:var(--night-2);color:var(--paper)}
+  .cx-panel iframe{flex:1;width:100%;border:none;background:var(--night)}
 </style>
 </head>
 <body>
@@ -438,6 +472,43 @@ set("c1",IMAGES.c1);set("c2",IMAGES.c2);set("c3",IMAGES.c3);
   const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target);}});},{threshold:.18});
   document.querySelectorAll(".reveal-up").forEach(el=>io.observe(el));
 })();
+
+/* ---------- concierge slide-out ---------- */
+(function(){
+  const fab=document.getElementById("cxFab");
+  const overlay=document.getElementById("cxOverlay");
+  const panel=document.getElementById("cxPanel");
+  const frame=document.getElementById("cxFrame");
+  let loaded=false;
+  function open(){
+    if(!loaded){frame.src="aerie-concierge.html";loaded=true;} // lazy-load on first open
+    overlay.classList.add("open");panel.classList.add("open");
+    document.body.style.overflow="hidden";
+  }
+  function close(){
+    overlay.classList.remove("open");panel.classList.remove("open");
+    document.body.style.overflow="";
+  }
+  fab.addEventListener("click",open);
+  overlay.addEventListener("click",close);
+  document.getElementById("cxClose").addEventListener("click",close);
+  document.addEventListener("keydown",e=>{if(e.key==="Escape")close();});
+})();
 </script>
+
+<!-- CONCIERGE LAUNCHER -->
+<button class="concierge-fab" id="cxFab" aria-label="Open concierge">
+  <span class="fab-dot"></span>
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
+  Concierge
+</button>
+<div class="cx-overlay" id="cxOverlay"></div>
+<aside class="cx-panel" id="cxPanel" aria-label="Concierge">
+  <div class="cx-bar">
+    <span>The Aerie · Concierge</span>
+    <button class="cx-close" id="cxClose" aria-label="Close">×</button>
+  </div>
+  <iframe id="cxFrame" title="Concierge" loading="lazy"></iframe>
+</aside>
 </body>
 </html>
